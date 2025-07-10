@@ -53,13 +53,13 @@ steps:
   displayName: 'Commit and Push Changes'
 
 - script: | 
-    API_URL="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullrequests?api-version=6.0"
+    API_URL="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullrequests?api-version=7.1"
     SOURCE_BRANCH="feature/wi-${{ parameters.WorkItemID }}"
     
     JSON_BODY=$(cat <<EOF
     {
-      "sourceRefName": "$SOURCE_BRANCH",
-      "targetRefName": "$(targetBranch)",
+      "sourceRefName": "refs/heads/$SOURCE_BRANCH",
+      "targetRefName": "refs/heads/$(targetBranch)",
       "title": "PR from pipeline: $SOURCE_BRANCH",
       "description": "Automated PR created by the pipeline for branch $SOURCE_BRANCH."
     }
