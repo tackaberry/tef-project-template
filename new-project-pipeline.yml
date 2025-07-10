@@ -23,7 +23,7 @@ steps:
 
 - script: |
     # Create a new branch for the PR
-    git checkout -b feature/wi-$(WorkItemID)
+    git checkout -b feature/wi-${{ parameters.WorkItemID }}
   displayName: 'Create New Branch'
 
 - script: |
