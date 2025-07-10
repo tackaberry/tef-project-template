@@ -11,7 +11,8 @@ parameters:
   - name: EditorGroup
 
 variables:
-  targetBranch: 'main' # Or your default branch
+  targetBranch: 'plan' # Or your default branch
+  environemtnt: 'development'
 
 steps:
 - task: UsePythonVersion@0

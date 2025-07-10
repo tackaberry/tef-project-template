@@ -1,0 +1,36 @@
+variable "project_name" {
+  description = "The name of the project to be created."
+  type        = string
+  
+}
+
+variable "editor_group" {
+  description = "The email of the group that will be granted editor roles."
+  type        = string
+}
+
+variable "billing_account" {
+  description = "The billing account to be associated with the project."
+  type        = string
+}
+
+variable "folder" {
+  description = "The folder ID where the project will be created."
+  type        = string
+}
+
+variable "project_prefix" {
+  description = "The prefix for the project ID."
+  type        = string
+  default     = "cch"
+}
+
+variable "base_host_project" {
+  description = "The base host project ID for network resources."
+  type        = string
+}
+
+variable "base_subnets" {
+  description = "The base subnets for network resources."
+  type        = list(string)
+}
