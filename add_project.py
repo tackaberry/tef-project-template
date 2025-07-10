@@ -11,13 +11,13 @@ def add_project_to_json():
     """
     project_name = os.getenv("PROJECT_NAME")
     editor_group = os.getenv("EDITOR_GROUP")
-    environment = os.getenv("ENVIRONMENT", "development")
+    folder_path = os.getenv("FOLDER_PATH", "envs/development/group/cch")
 
     if not project_name or not editor_group:
         print("Error: Please set PROJECT_NAME and EDITOR_GROUP environment variables.", file=sys.stderr)
         sys.exit(1)
 
-    json_file_path = os.path.join(os.path.dirname(__file__), f'envs/{environment}/projects.json')
+    json_file_path = os.path.join(os.path.dirname(__file__), f'{folder_path}/projects.json')
 
     # Read existing JSON data
     try:
