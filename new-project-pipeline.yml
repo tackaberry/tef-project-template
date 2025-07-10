@@ -6,11 +6,11 @@ pool:
 
 variables:
   # These would be set by the work item trigger or at runtime
-  -name: WorkItemID
+  - name: WorkItemID
     value: ''
-  -name: ProjectName
+  - name: ProjectName
     value: ''
-  -name: EditorGroup  
+  - name: EditorGroup  
     value: ''
 
 steps:
