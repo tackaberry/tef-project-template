@@ -8,7 +8,10 @@ parameters:
   # These would be set by the work item trigger or at runtime
   - name: WorkItemID
   - name: ProjectName
-  - name: EditorGroup  
+  - name: EditorGroup
+
+variables:
+  targetBranch: 'main' # Or your default branch
 
 steps:
 - task: UsePythonVersion@0
@@ -52,13 +55,13 @@ steps:
 - script: | 
     API_URL="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullrequests?api-version=6.0"
     SOURCE_BRANCH="feature/wi-${{ parameters.WorkItemID }}"
-    targetBranch="main"
+    
     JSON_BODY=$(cat <<EOF
     {
       "sourceRefName": "$SOURCE_BRANCH",
       "targetRefName": "$(targetBranch)",
-      "title": "PR from pipeline: $(Build.SourceBranchName)",
-      "description": "Automated PR created by the pipeline for branch $(Build.SourceBranchName)."
+      "title": "PR from pipeline: $SOURCE_BRANCH",
+      "description": "Automated PR created by the pipeline for branch $SOURCE_BRANCH."
     }
     EOF
     )
