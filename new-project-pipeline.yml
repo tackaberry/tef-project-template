@@ -27,6 +27,7 @@ steps:
   displayName: 'Create New Branch'
 
 - script: |
+    echo $PROJECT_NAME
     python add_project.py
   displayName: 'Add Project to JSON'
   env:
