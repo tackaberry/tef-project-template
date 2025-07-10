@@ -8,9 +8,7 @@ variables:
   # These would be set by the work item trigger or at runtime
   - name: WorkItemID
   - name: ProjectName
-    value: ''
   - name: EditorGroup  
-    value: ''
 
 steps:
 - task: UsePythonVersion@0
@@ -44,6 +42,7 @@ steps:
   displayName: 'Commit and Push Changes'
 
 - task: CreatePullRequest@1
+  # need to install https://marketplace.visualstudio.com/items?itemName=ShaykiAbramczyk.CreatePullRequest
   inputs:
     repositoryName: '$(Build.Repository.Name)'
     sourceBranch: 'refs/heads/feature/wi-$(WorkItemID)'
