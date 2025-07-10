@@ -27,16 +27,13 @@ steps:
   displayName: 'Create New Branch'
 
 - script: |
-    echo $(ProjectName)
-    echo $(EditorGroup)
-    echo "Project name: ${{ parameters.ProjectName }}"
-    echo "Project name: $PROJECT_NAME"
-    echo "Editor group: $EDITOR_GROUP"
+    cat projects.json
     python add_project.py
+    cat projects.json
   displayName: 'Add Project to JSON'
   env:
-    PROJECT_NAME: $(ProjectName)
-    EDITOR_GROUP: $(EditorGroup)
+    PROJECT_NAME: ${{ parameters.ProjectName }}
+    EDITOR_GROUP: ${{ parameters.EditorGroup }}
 
 - script: |
     git config --global user.email "pipeline@azuredevops.com"
