@@ -4,7 +4,7 @@ pr: none
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
+parameters:
   # These would be set by the work item trigger or at runtime
   - name: WorkItemID
   - name: ProjectName
@@ -29,6 +29,7 @@ steps:
 - script: |
     echo $(ProjectName)
     echo $(EditorGroup)
+    echo "Project name: ${{ parameters.ProjectName }}"
     echo "Project name: $PROJECT_NAME"
     echo "Editor group: $EDITOR_GROUP"
     python add_project.py
