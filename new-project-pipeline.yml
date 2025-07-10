@@ -14,7 +14,9 @@ parameters:
 
 variables:
   targetBranch: 'plan' 
-  environemtnt: 'development'
+  environment: 'development'
+  folderPath: "envs/development/group/cch"
+
 
 steps:
 - task: UsePythonVersion@0
@@ -41,11 +43,12 @@ steps:
     python add_project.py
     echo "==============================================================================\n"
     echo "Updated projects.json:"
-    cat projects.json
+    cat $(folderPath)/projects.json
   displayName: 'Add Project to JSON'
   env:
     PROJECT_NAME: ${{ parameters.ProjectName }}
     EDITOR_GROUP: ${{ parameters.EditorGroup }}
+    FOLDER_PATH: $(folderPath)
 
 - script: |
     git config --global user.email "pipeline@azuredevops.com"
