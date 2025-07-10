@@ -6,9 +6,12 @@ pool:
 
 variables:
   # These would be set by the work item trigger or at runtime
-  WorkItemID: ''
-  ProjectName: ''
-  EditorGroup: ''
+  -name: WorkItemID
+    value: ''
+  -name: ProjectName
+    value: ''
+  -name: EditorGroup  
+    value: ''
 
 steps:
 - task: UsePythonVersion@0
