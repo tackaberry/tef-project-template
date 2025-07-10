@@ -27,8 +27,12 @@ steps:
   displayName: 'Create New Branch'
 
 - script: |
+    echo "Adding project to projects.json"
     cat projects.json
+    echo "==============================================================================\n"
     python add_project.py
+    echo "==============================================================================\n"
+    echo "Updated projects.json:"
     cat projects.json
   displayName: 'Add Project to JSON'
   env:
