@@ -51,7 +51,8 @@ steps:
 
 - script: | 
     API_URL="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullrequests?api-version=6.0"
-    SOURCE_BRANCH="$(Build.SourceBranch)"
+    SOURCE_BRANCH="feature/wi-${{ parameters.WorkItemID }}"
+    targetBranch="main"
     JSON_BODY=$(cat <<EOF
     {
       "sourceRefName": "$SOURCE_BRANCH",
@@ -68,6 +69,9 @@ steps:
     RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $AZURE_DEVOPS_TOKEN" -d "$JSON_BODY" "$API_URL")
 
     echo "Response: $RESPONSE"
+  displayName: 'Create Pull Request via REST API'
+  env:
+    AZURE_DEVOPS_TOKEN: $(System.AccessToken)
 
 # - task: CreatePullRequest@1
 #   # need to install https://marketplace.visualstudio.com/items?itemName=ShaykiAbramczyk.CreatePullRequest
