@@ -7,8 +7,8 @@ pool:
 variables:
   # These would be set by the work item trigger or at runtime
   WorkItemID: ''
-  ItemName: ''
-  ItemDescription: ''
+  ProjectName: ''
+  EditorGroup: ''
 
 steps:
 - task: UsePythonVersion@0
@@ -18,7 +18,7 @@ steps:
 
 - script: |
     pip install --upgrade pip
-    # No external libraries needed for this script
+    # No external libraries are needed for the python script
   displayName: 'Install dependencies'
 
 - script: |
@@ -27,18 +27,17 @@ steps:
   displayName: 'Create New Branch'
 
 - script: |
-    python scripts/add_item_azure.py
-  displayName: 'Add Item to JSON'
+    python add_project.py
+  displayName: 'Add Project to JSON'
   env:
-    ITEM_NAME: $(ItemName)
-    ITEM_DESCRIPTION: $(ItemDescription)
-    WORK_ITEM_ID: $(WorkItemID)
+    PROJECT_NAME: $(ProjectName)
+    EDITOR_GROUP: $(EditorGroup)
 
 - script: |
     git config --global user.email "pipeline@azuredevops.com"
     git config --global user.name "Azure DevOps Pipeline"
-    git add items.json
-    git commit -m "feat: Add item from work item $(WorkItemID)"
+    git add projects.json
+    git commit -m "feat: Add project '$(ProjectName)' from work item $(WorkItemID)"
     git push --set-upstream origin feature/wi-$(WorkItemID)
   displayName: 'Commit and Push Changes'
 
@@ -47,5 +46,5 @@ steps:
     repositoryName: '$(Build.Repository.Name)'
     sourceBranch: 'refs/heads/feature/wi-$(WorkItemID)'
     targetBranch: 'refs/heads/main' # Or your default branch
-    title: 'feat: Add item from work item $(WorkItemID)'
+    title: 'feat: Add project ''$(ProjectName)'' from work item $(WorkItemID)'
     description: 'This PR was automatically created from work item $(WorkItemID).'
