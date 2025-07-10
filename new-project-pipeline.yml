@@ -1,3 +1,5 @@
+name: new-project-$(Date:yy).$(Date:MM).0.$(BuildID)-$(Date:yyyyMMdd)-$(Date:HHmm)
+
 trigger: none # We will trigger this manually or from a work item
 pr: none
 
