@@ -1,0 +1,51 @@
+trigger: none # We will trigger this manually or from a work item
+pr: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  # These would be set by the work item trigger or at runtime
+  WorkItemID: ''
+  ItemName: ''
+  ItemDescription: ''
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+  displayName: 'Use Python 3.x'
+
+- script: |
+    pip install --upgrade pip
+    # No external libraries needed for this script
+  displayName: 'Install dependencies'
+
+- script: |
+    # Create a new branch for the PR
+    git checkout -b feature/wi-$(WorkItemID)
+  displayName: 'Create New Branch'
+
+- script: |
+    python scripts/add_item_azure.py
+  displayName: 'Add Item to JSON'
+  env:
+    ITEM_NAME: $(ItemName)
+    ITEM_DESCRIPTION: $(ItemDescription)
+    WORK_ITEM_ID: $(WorkItemID)
+
+- script: |
+    git config --global user.email "pipeline@azuredevops.com"
+    git config --global user.name "Azure DevOps Pipeline"
+    git add items.json
+    git commit -m "feat: Add item from work item $(WorkItemID)"
+    git push --set-upstream origin feature/wi-$(WorkItemID)
+  displayName: 'Commit and Push Changes'
+
+- task: CreatePullRequest@1
+  inputs:
+    repositoryName: '$(Build.Repository.Name)'
+    sourceBranch: 'refs/heads/feature/wi-$(WorkItemID)'
+    targetBranch: 'refs/heads/main' # Or your default branch
+    title: 'feat: Add item from work item $(WorkItemID)'
+    description: 'This PR was automatically created from work item $(WorkItemID).'
