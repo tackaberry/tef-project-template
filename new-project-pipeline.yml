@@ -49,6 +49,26 @@ steps:
     git push --set-upstream origin feature/wi-${{ parameters.WorkItemID }}
   displayName: 'Commit and Push Changes'
 
+- script: | 
+    API_URL="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullrequests?api-version=6.0"
+    SOURCE_BRANCH="$(Build.SourceBranch)"
+    JSON_BODY=$(cat <<EOF
+    {
+      "sourceRefName": "$SOURCE_BRANCH",
+      "targetRefName": "$(targetBranch)",
+      "title": "PR from pipeline: $(Build.SourceBranchName)",
+      "description": "Automated PR created by the pipeline for branch $(Build.SourceBranchName)."
+    }
+    EOF
+    )
+    echo "Creating pull request from $SOURCE_BRANCH to $(targetBranch)..."
+    echo "API URL: $API_URL"
+    echo "Request Body: $JSON_BODY"
+
+    RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $AZURE_DEVOPS_TOKEN" -d "$JSON_BODY" "$API_URL")
+
+    echo "Response: $RESPONSE"
+
 # - task: CreatePullRequest@1
 #   # need to install https://marketplace.visualstudio.com/items?itemName=ShaykiAbramczyk.CreatePullRequest
 #   inputs:
@@ -58,22 +78,22 @@ steps:
 #     title: 'feat: Add project ''$(ProjectName)'' from work item ${{ parameters.WorkItemID }}'
 #     description: 'This PR was automatically created from work item ${{ parameters.WorkItemID }}.'
 
-- task: AzureCLI@2
-  displayName: 'Create Pull Request with Azure CLI'
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], variables.targetBranch))
-  inputs:
-    azureSubscription: '53f26d3b-e785-4e0c-aaa2-8c5c3a9f29ee'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      # Login to Azure DevOps using the pipeline's token
-      echo $(System.AccessToken) | az devops login --organization $(System.TeamFoundationCollectionUri)
+# - task: AzureCLI@2
+#   displayName: 'Create Pull Request with Azure CLI'
+#   condition: and(succeeded(), ne(variables['Build.SourceBranch'], variables.targetBranch))
+#   inputs:
+#     azureSubscription: '53f26d3b-e785-4e0c-aaa2-8c5c3a9f29ee'
+#     scriptType: 'bash'
+#     scriptLocation: 'inlineScript'
+#     inlineScript: |
+#       # Login to Azure DevOps using the pipeline's token
+#       echo $(System.AccessToken) | az devops login --organization $(System.TeamFoundationCollectionUri)
 
-      # Create the pull request
-      az repos pr create \
-          --repository "$(Build.Repository.Name)" \
-          --project "$(System.TeamProject)" \
-          --source-branch "$(Build.SourceBranchName)" \
-          --target-branch "main" \
-          --title "Automated PR for $(Build.SourceBranchName)" \
-          --description "PR created by Azure Pipeline."
+#       # Create the pull request
+#       az repos pr create \
+#           --repository "$(Build.Repository.Name)" \
+#           --project "$(System.TeamProject)" \
+#           --source-branch "$(Build.SourceBranchName)" \
+#           --target-branch "main" \
+#           --title "Automated PR for $(Build.SourceBranchName)" \
+#           --description "PR created by Azure Pipeline."
