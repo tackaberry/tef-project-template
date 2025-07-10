@@ -49,11 +49,31 @@ steps:
     git push --set-upstream origin feature/wi-${{ parameters.WorkItemID }}
   displayName: 'Commit and Push Changes'
 
-- task: CreatePullRequest@1
-  # need to install https://marketplace.visualstudio.com/items?itemName=ShaykiAbramczyk.CreatePullRequest
+# - task: CreatePullRequest@1
+#   # need to install https://marketplace.visualstudio.com/items?itemName=ShaykiAbramczyk.CreatePullRequest
+#   inputs:
+#     repositoryName: '$(Build.Repository.Name)'
+#     sourceBranch: 'refs/heads/feature/wi-${{ parameters.WorkItemID }}'
+#     targetBranch: 'refs/heads/main' # Or your default branch
+#     title: 'feat: Add project ''$(ProjectName)'' from work item ${{ parameters.WorkItemID }}'
+#     description: 'This PR was automatically created from work item ${{ parameters.WorkItemID }}.'
+
+- task: AzureCLI@2
+  displayName: 'Create Pull Request with Azure CLI'
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], variables.targetBranch))
   inputs:
-    repositoryName: '$(Build.Repository.Name)'
-    sourceBranch: 'refs/heads/feature/wi-${{ parameters.WorkItemID }}'
-    targetBranch: 'refs/heads/main' # Or your default branch
-    title: 'feat: Add project ''$(ProjectName)'' from work item ${{ parameters.WorkItemID }}'
-    description: 'This PR was automatically created from work item ${{ parameters.WorkItemID }}.'
+    azureSubscription: '53f26d3b-e785-4e0c-aaa2-8c5c3a9f29ee'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Login to Azure DevOps using the pipeline's token
+      echo $(System.AccessToken) | az devops login --organization $(System.TeamFoundationCollectionUri)
+
+      # Create the pull request
+      az repos pr create \
+          --repository "$(Build.Repository.Name)" \
+          --project "$(System.TeamProject)" \
+          --source-branch "$(Build.SourceBranchName)" \
+          --target-branch "main" \
+          --title "Automated PR for $(Build.SourceBranchName)" \
+          --description "PR created by Azure Pipeline."
