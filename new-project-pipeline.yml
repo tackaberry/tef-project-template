@@ -27,6 +27,8 @@ steps:
   displayName: 'Create New Branch'
 
 - script: |
+    echo $(ProjectName)
+    echo $(EditorGroup)
     echo "Project name: $PROJECT_NAME"
     echo "Editor group: $EDITOR_GROUP"
     python add_project.py
