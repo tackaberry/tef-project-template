@@ -43,7 +43,7 @@ steps:
     git config --global user.email "pipeline@azuredevops.com"
     git config --global user.name "Azure DevOps Pipeline"
     git add projects.json
-    git commit -m "feat: Add project '$(ProjectName)' from work item $(WorkItemID)"
+    git commit -m "feat: Add project '$(ProjectName)' from work item $(WorkItemID) [skip ci]"
     git push --set-upstream origin feature/wi-$(WorkItemID)
   displayName: 'Commit and Push Changes'
 
