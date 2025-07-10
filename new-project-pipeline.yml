@@ -13,7 +13,7 @@ parameters:
   - name: EditorGroup
 
 variables:
-  targetBranch: 'plan' # Or your default branch
+  targetBranch: 'plan' 
   environemtnt: 'development'
 
 steps:
