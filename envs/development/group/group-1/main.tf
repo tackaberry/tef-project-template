@@ -14,20 +14,21 @@ variable "remote_state_bucket" {
 locals {
 
   env                = "development"
-  folder_name            = "def"
+  parent_folder_name = "level1"
+  folder_name        = "group-1"
+  project_prefix     = "group1"
 
-  folder = data.terraform_remote_state.folders.outputs.folders[index(data.terraform_remote_state.folders.outputs.folders.*.display_name, local.folder_name )]
+  folder = data.terraform_remote_state.folders.outputs.folders[index(data.terraform_remote_state.folders.outputs.folders.*.display_name, local.folder_name)]
 
-  region     = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
+  region = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
 
-  project_prefix = "cch"
-  projects           =  jsondecode(file("projects.json"))
+  projects = jsondecode(file("projects.json"))
 
   billing_account = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account_id
- 
+
   base_host_project = data.terraform_remote_state.network.outputs.base_host_project_id
-  base_network = data.terraform_remote_state.network.outputs.base_network_self_link
-  base_subnets = data.terraform_remote_state.network.outputs.base_subnets_self_links
+  base_network      = data.terraform_remote_state.network.outputs.base_network_self_link
+  base_subnets      = data.terraform_remote_state.network.outputs.base_subnets_self_links
 
 }
 
@@ -42,8 +43,8 @@ data "terraform_remote_state" "folders" {
 
 
 resource "google_folder" "folder" {
-  display_name = "fldr-${local.env}-simple-folder"
-  parent       = local.folder.name
+  display_name = "fldr-${local.env}-${local.folder_name}"
+  parent       = local.parent_folder_name
 }
 
 

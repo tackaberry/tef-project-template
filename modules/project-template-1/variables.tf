@@ -1,12 +1,18 @@
 variable "project_name" {
   description = "The name of the project to be created."
   type        = string
-  
+
 }
 
 variable "editor_group" {
   description = "The email of the group that will be granted editor roles."
   type        = string
+}
+
+variable "metadata" {
+  description = "Metadata to be associated with the project."
+  type        = map(string)
+  default     = {}
 }
 
 variable "billing_account" {

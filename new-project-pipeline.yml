@@ -11,11 +11,12 @@ parameters:
   - name: WorkItemID
   - name: ProjectName
   - name: EditorGroup
+  - name: DataClassification
 
 variables:
   targetBranch: 'plan' 
   environment: 'development'
-  folderPath: "envs/development/group/cch"
+  folderPath: "envs/development/group/group-1"
 
 
 steps:
@@ -48,6 +49,8 @@ steps:
   env:
     PROJECT_NAME: ${{ parameters.ProjectName }}
     EDITOR_GROUP: ${{ parameters.EditorGroup }}
+    DATA_CLASSIFICATION: ${{ parameters.DataClassification }}
+    WORK_ITEM_ID: ${{ parameters.WorkItemID }}
     FOLDER_PATH: $(folderPath)
 
 - script: |
@@ -81,32 +84,3 @@ steps:
   displayName: 'Create Pull Request via REST API'
   env:
     AZURE_DEVOPS_TOKEN: $(System.AccessToken)
-
-# - task: CreatePullRequest@1
-#   # need to install https://marketplace.visualstudio.com/items?itemName=ShaykiAbramczyk.CreatePullRequest
-#   inputs:
-#     repositoryName: '$(Build.Repository.Name)'
-#     sourceBranch: 'refs/heads/feature/wi-${{ parameters.WorkItemID }}'
-#     targetBranch: 'refs/heads/main' # Or your default branch
-#     title: 'feat: Add project ''$(ProjectName)'' from work item ${{ parameters.WorkItemID }}'
-#     description: 'This PR was automatically created from work item ${{ parameters.WorkItemID }}.'
-
-# - task: AzureCLI@2
-#   displayName: 'Create Pull Request with Azure CLI'
-#   condition: and(succeeded(), ne(variables['Build.SourceBranch'], variables.targetBranch))
-#   inputs:
-#     azureSubscription: '53f26d3b-e785-4e0c-aaa2-8c5c3a9f29ee'
-#     scriptType: 'bash'
-#     scriptLocation: 'inlineScript'
-#     inlineScript: |
-#       # Login to Azure DevOps using the pipeline's token
-#       echo $(System.AccessToken) | az devops login --organization $(System.TeamFoundationCollectionUri)
-
-#       # Create the pull request
-#       az repos pr create \
-#           --repository "$(Build.Repository.Name)" \
-#           --project "$(System.TeamProject)" \
-#           --source-branch "$(Build.SourceBranchName)" \
-#           --target-branch "main" \
-#           --title "Automated PR for $(Build.SourceBranchName)" \
-#           --description "PR created by Azure Pipeline."

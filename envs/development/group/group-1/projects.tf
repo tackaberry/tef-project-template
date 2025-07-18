@@ -1,16 +1,18 @@
 module "cch_projects" {
   for_each = local.projects
-  source = "../../modules/cch-project-template"
+  source   = "../../modules/project-template-1"
 
-  project_name        = each.value.project_name
-  editor_group        = each.value.editor_group
+  project_name = each.value.project_name
+  editor_group = each.value.editor_group
+
+  metadata = each.value.metadata
 
 
-  billing_account = local.billing_account
-  folder = local.folder
-  project_prefix = local.project_prefix
+  billing_account   = local.billing_account
+  folder            = local.folder
+  project_prefix    = local.project_prefix
   base_host_project = local.base_host_project
-  base_subnets = local.base_subnets
+  base_subnets      = local.base_subnets
 
 }
 

@@ -8,27 +8,27 @@ locals {
   project_id = "${var.project_prefix}-${local.project_name}"
 
   editor_roles = [
-        "roles/aiplatform.user",
-        "roles/bigquery.user",
-        "roles/alloydb.databaseUser",
-        "roles/cloudsql.editor",
-        "roles/storage.admin",
-        "roles/storage.bucketviewer",
-        "roles/compute.instanceAdmin",
-        "roles/compute.networkUser",
-        "roles/monitoring.editor",
-        "roles/logging.viewer",
-        "roles/cloudbuild.builds.editor",
-        "roles/artifactregistry.writer",
-        "roles/dataplex.editor",
-        "roles/dataplex.catalogEditor",
-        "roles/run.developer",
-        "roles/cloudfunctions.developer",
-        "roles/container.developer",
-        "roles/secretmanager.admin",
-        "roles/accesscontextmanager.policyEditor",
-        "roles/cloudscheduler.admin",
-  ] 
+    "roles/aiplatform.user",
+    "roles/bigquery.user",
+    "roles/alloydb.databaseUser",
+    "roles/cloudsql.editor",
+    "roles/storage.admin",
+    "roles/storage.bucketviewer",
+    "roles/compute.instanceAdmin",
+    "roles/compute.networkUser",
+    "roles/monitoring.editor",
+    "roles/logging.viewer",
+    "roles/cloudbuild.builds.editor",
+    "roles/artifactregistry.writer",
+    "roles/dataplex.editor",
+    "roles/dataplex.catalogEditor",
+    "roles/run.developer",
+    "roles/cloudfunctions.developer",
+    "roles/container.developer",
+    "roles/secretmanager.admin",
+    "roles/accesscontextmanager.policyEditor",
+    "roles/cloudscheduler.admin",
+  ]
   apis_to_enable = [
     "serviceusage.googleapis.com",
     "cloudresourcemanager.googleapis.com",
@@ -53,10 +53,10 @@ locals {
 }
 
 resource "google_project" "main" {
-  name            = local.project_name
-  project_id      = local.project_id
-  folder_id       = var.folder
-  billing_account = var.billing_account
+  name                = local.project_name
+  project_id          = local.project_id
+  folder_id           = var.folder
+  billing_account     = var.billing_account
   auto_create_network = false
 }
 
