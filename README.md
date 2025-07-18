@@ -29,3 +29,9 @@ The process for creating a new project is automated via an Azure DevOps pipeline
 7.  **Review and Approval**: A designated approver (e.g., a cloud administrator) reviews the pull request. This step serves as a manual governance gate to ensure the requested project adheres to organizational standards.
 
 8.  **Merge and Deploy**: Upon PR approval and merge, a separate build pipeline is triggered. This pipeline runs IaC deploy to provision the new GCP project as defined in the code.
+
+## Trigger
+
+Manual trigger in Azure DevOps. 
+
+![Trigger](trigger.png)

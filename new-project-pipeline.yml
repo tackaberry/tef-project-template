@@ -50,7 +50,7 @@ steps:
     PROJECT_NAME: ${{ parameters.ProjectName }}
     EDITOR_GROUP: ${{ parameters.EditorGroup }}
     DATA_CLASSIFICATION: ${{ parameters.DataClassification }}
-    WORK_ITEM_ID: ${{ parameters.WorkItemID }}
+    WORKITEM_ID: ${{ parameters.WorkItemID }}
     FOLDER_PATH: $(folderPath)
 
 - script: |
