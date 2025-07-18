@@ -1,4 +1,4 @@
-module "cch_projects" {
+module "projects" {
   for_each = local.projects
   source   = "../../modules/project-template-1"
 
@@ -19,7 +19,7 @@ module "cch_projects" {
 output "created_projects" {
   description = "A map of the created projects and their details."
   value = {
-    for key, project in module.cch_projects : key => {
+    for key, project in module.projects : key => {
       name           = project.name
       project_id     = project.project_id
       project_number = project.project_number

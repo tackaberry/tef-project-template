@@ -28,7 +28,6 @@ variable "folder" {
 variable "project_prefix" {
   description = "The prefix for the project ID."
   type        = string
-  default     = "cch"
 }
 
 variable "base_host_project" {
