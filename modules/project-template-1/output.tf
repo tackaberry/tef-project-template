@@ -8,4 +8,12 @@ output "project_id" {
 
 output "project_number" {
   value = google_project.main.number
-}   
+}
+
+output "data_classification" {
+  value = local.data_classification
+}
+
+output "project_type" {
+  value = local.project_type
+}

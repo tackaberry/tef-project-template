@@ -7,6 +7,9 @@ locals {
 
   project_id = "${var.project_prefix}-${local.project_name}"
 
+  data_classification = var.metadata.data_classification
+  project_type = var.metadata.project_type
+
   editor_roles = [
     "roles/aiplatform.user",
     "roles/bigquery.user",

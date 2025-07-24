@@ -1,31 +1,13 @@
-module "admin_project" {
-
-  source   = "../../modules/project-template-1-admin"
-
-  project_name = "admin-project"
-  editor_group =  "gcp-editors-proj1@example.com"
-
-  metadata = {
-    "data_classification" = "unclass"
-  }
-
-  billing_account   = local.billing_account
-  folder            = local.folder
-  project_prefix    = local.project_prefix
-  base_host_project = local.base_host_project
-  base_subnets      = local.base_subnets
-
-}
 
 module "projects" {
   for_each = local.projects
-  source   = "../../modules/project-template-1"
+
+  source   = "../../modules/${each.template}"
 
   project_name = each.value.project_name
   editor_group = each.value.editor_group
 
   metadata = each.value.metadata
-
 
   billing_account   = local.billing_account
   folder            = local.folder

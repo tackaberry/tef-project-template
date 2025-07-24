@@ -2,21 +2,27 @@
   "example-project-1": {
     "project_name": "project-1",
     "editor_group": "gcp-editors-proj1@example.com",
+    "template": "project-template-1-admin",
     "metadata": {
+      "type": "admin",
       "data_classification": "pb"
     }
   },
   "example-project-2": {
     "project_name": "project-2",
     "editor_group": "gcp-editors-proj2@example.com",
+    "template": "project-template-1",
     "metadata": {
+      "type": "client",
       "data_classification": "pb"
     }
   },
   "project-3": {
     "project_name": "project-3",
     "editor_group": "group@abc.com",
+    "template": "project-template-1",
     "metadata": {
+      "type": "client",
       "data_classification": "unclass"
     }
   }
