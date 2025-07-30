@@ -2,7 +2,7 @@
 module "projects" {
   for_each = local.projects
 
-  source   = "../../modules/${each.template}"
+  source   = "../../modules/project-template"
 
   project_name = each.value.project_name
   editor_group = each.value.editor_group
@@ -10,7 +10,7 @@ module "projects" {
   metadata = each.value.metadata
 
   billing_account   = local.billing_account
-  folder            = local.folder
+  folder            = each.value.folder.metadata.data_classification == "unclassified" ? google_folder.folder_unclass.name : google_assured_workloads_workload.folder_pb.name
   project_prefix    = local.project_prefix
   base_host_project = local.base_host_project
   base_subnets      = local.base_subnets

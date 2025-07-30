@@ -6,12 +6,15 @@ variable "project_name" {
 
 variable "editor_group" {
   description = "The email of the group that will be granted editor roles."
-  type        = string
+  type        = map(string)
 }
 
 variable "metadata" {
   description = "Metadata to be associated with the project."
-  type        = map(string)
+  type = object({
+    type             = string
+    data_classification = string
+  })
   default     = {}
 }
 

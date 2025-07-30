@@ -8,7 +8,7 @@ locals {
   project_id = "${var.project_prefix}-${local.project_name}"
 
   data_classification = var.metadata.data_classification
-  project_type = var.metadata.project_type
+  project_type = var.metadata.type
 
   editor_roles = [
     "roles/aiplatform.user",
@@ -53,10 +53,25 @@ locals {
     "accesscontextmanager.googleapis.com",
     "cloudscheduler.googleapis.com",
   ]
+
+  editor_group_roles = flatten([
+    for editor_group in local.editor_group : [
+      for role in local.editor_roles : {
+        member = "group:${editor_group}"
+        role = role
+      }
+    ]
+  ])
+}
+
+resource "random_string" "suffix" {
+  length  = 4
+  upper   = false
+  special = false
 }
 
 resource "google_project" "main" {
-  name                = local.project_name
+  name                = "${local.project_name}-${random_string.suffix.result}"
   project_id          = local.project_id
   folder_id           = var.folder
   billing_account     = var.billing_account
@@ -71,10 +86,12 @@ resource "google_project_service" "apis" {
 }
 
 resource "google_project_iam_member" "editor_group_bindings" {
-  for_each = toset(local.editor_roles)
+  
+  for_each = local.editor_group_roles
+  
   project  = google_project.main.project_id
-  role     = each.value
-  member   = "group:${local.editor_group}"
+  role     = each.value.role
+  member   = each.value.member
 
   depends_on = [google_project_service.apis]
 }

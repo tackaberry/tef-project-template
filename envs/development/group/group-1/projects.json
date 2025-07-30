@@ -1,7 +1,7 @@
 {
   "example-project-1": {
     "project_name": "project-1",
-    "editor_group": "gcp-editors-proj1@example.com",
+    "editor_group": [ "gcp-editors-proj1@example.com" ],
     "template": "project-template-1-admin",
     "metadata": {
       "type": "admin",
@@ -10,7 +10,7 @@
   },
   "example-project-2": {
     "project_name": "project-2",
-    "editor_group": "gcp-editors-proj2@example.com",
+    "editor_group": [ "gcp-editors-proj1@example.com" ],
     "template": "project-template-1",
     "metadata": {
       "type": "client",
@@ -19,7 +19,7 @@
   },
   "project-3": {
     "project_name": "project-3",
-    "editor_group": "group@abc.com",
+    "editor_group": [ "gcp-editors-proj1@example.com" ],
     "template": "project-template-1",
     "metadata": {
       "type": "client",
