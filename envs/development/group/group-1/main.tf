@@ -33,6 +33,10 @@ locals {
 
 }
 
+output "subnets" {
+  value = local.base_subnets
+}
+
 resource "google_folder" "folder" {
   display_name = "fldr-${local.env}-${local.folder_name}"
   parent       = local.parent_folder_name

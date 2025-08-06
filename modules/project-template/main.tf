@@ -62,6 +62,18 @@ locals {
       }
     ]
   ])
+
+  network_roles = flatten([
+    for editor_group in local.editor_group : [
+      for subnet in var.base_subnets :{
+        member = "group:${editor_group}"
+        project = split("/", subnet.key)[6]
+        region = split("/", subnet.key)[8]
+        subnetwork = split("/", subnet.key)[10]
+      }
+    ]
+  ])
+  
 }
 
 resource "random_string" "suffix" {
@@ -104,12 +116,17 @@ resource "google_compute_shared_vpc_service_project" "main" {
 }
 
 resource "google_compute_subnetwork_iam_member" "editor_group_subnet_access" {
-  for_each   = toset(var.base_subnets)
-  project    = split("/", each.key)[1]
-  region     = split("/", each.key)[3]
-  subnetwork = split("/", each.key)[5]
+  
+  for_each   = local.network_roles
+
+  project    = each.value.project
+  region     = each.value.region
+  subnetwork = each.value.subnetwork
+
+  member     = each.value.member
+
   role       = "roles/compute.networkUser"
-  member     = "group:${local.editor_group}"
+  
 
   depends_on = [google_compute_shared_vpc_service_project.main]
 }
