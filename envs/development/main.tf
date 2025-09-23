@@ -14,11 +14,10 @@ variable "remote_state_bucket" {
 locals {
 
   env                = "development"
-  parent_folder_name = "level1"
   folder_name        = "group-1"
   project_prefix     = "group1"
 
-  # folder = data.terraform_remote_state.folders.outputs.folders[index(data.terraform_remote_state.folders.outputs.folders.*.display_name, local.folder_name)]
+  parent_folder_name = data.terraform_remote_state.env.outputs.env_folder
 
   region = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   organization = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
@@ -33,17 +32,14 @@ locals {
 
 }
 
-output "subnets" {
-  value = local.base_subnets
-}
 
 resource "google_folder" "folder" {
-  display_name = "fldr-${local.env}-${local.folder_name}"
+  display_name = "fldr-${local.folder_name}"
   parent       = local.parent_folder_name
 }
 
 resource "google_folder" "folder_unclass" {
-  display_name = "fldr-${local.env}-${local.folder_name}-unclass"
+  display_name = "fldr-${local.folder_name}-unclass"
   parent       = google_folder.folder.name
 }
 
@@ -59,10 +55,10 @@ resource "google_project_service" "enable_api_aw" {
 
 resource "google_assured_workloads_workload" "folder_pb" {
   compliance_regime         = "CA_PROTECTED_B"
-  display_name              = "fldr-${local.env}-${local.folder_name}-pb"
+  display_name              = "fldr-${local.folder_name}-pb-${random_string.suffix.result}"
   location                  = "ca"
   organization              = local.organization
-  billing_account           = local.billing_account
+  billing_account           = "billingAccounts/${local.billing_account}"
   enable_sovereign_controls = true
 
   resource_settings {
@@ -70,10 +66,11 @@ resource "google_assured_workloads_workload" "folder_pb" {
   }
 
   provider                  = google-beta
+  depends_on = [google_project_service.dependency_project_api] 
 }
 
 resource "random_string" "suffix" {
-  length  = 4
+  length  = 5
   upper   = false
   special = false
 }
@@ -81,8 +78,19 @@ resource "random_string" "suffix" {
 resource "google_project" "dependency_project" {
   name                = "dep-${local.env}-${local.project_prefix}"
   project_id          = "dep-${local.env}-${local.project_prefix}-${random_string.suffix.result}"
+  folder_id           = google_folder.folder.name
+  billing_account     = local.billing_account
   auto_create_network = false
+  deletion_policy     = "DELETE"
 }
+
+resource "google_project_service" "dependency_project_api" {
+
+  project            = google_project.dependency_project.project_id
+  service            = "assuredworkloads.googleapis.com"
+  disable_on_destroy = false
+}
+
 
 data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
@@ -93,15 +101,15 @@ data "terraform_remote_state" "bootstrap" {
   }
 }
 
-
-data "terraform_remote_state" "folders" {
+data "terraform_remote_state" "env" {
   backend = "gcs"
 
   config = {
     bucket = var.remote_state_bucket
-    prefix = "terraform/projects/root_folders/${local.env}"
+    prefix = "terraform/environments/${local.env}"
   }
 }
+
 
 data "terraform_remote_state" "network" {
   backend = "gcs"

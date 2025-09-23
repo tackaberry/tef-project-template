@@ -1,3 +1,6 @@
 .terraform
 *.hcl
 terraform.tfvars
+*.tfstate
+*.tfstate.backup
+.terraform.tfstate*
