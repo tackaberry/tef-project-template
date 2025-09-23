@@ -58,7 +58,7 @@ locals {
     for editor_group in local.editor_group : [
       for role in local.editor_roles : {
         key = "${editor_group}-${role}"
-        member = "group:${editor_group}"
+        member = "group:${editor_group}@${var.identity_domain}"
         role = role
       }
     ]
@@ -68,7 +68,7 @@ locals {
     for editor_group in local.editor_group : [
       for subnet in var.base_subnets :{
         key = "${editor_group}-${subnet}"
-        member = "group:${editor_group}"
+        member = "group:${editor_group}@${var.identity_domain}"
         project = split("/", subnet)[6]
         region = split("/", subnet)[8]
         subnetwork = split("/", subnet)[10]
@@ -79,14 +79,14 @@ locals {
 }
 
 resource "random_string" "suffix" {
-  length  = 4
+  length  = 6
   upper   = false
   special = false
 }
 
 resource "google_project" "main" {
-  name                = "${local.project_name}-${random_string.suffix.result}"
-  project_id          = local.project_id
+  name                = local.project_name
+  project_id          = "${local.project_name}-${random_string.suffix.result}"
   folder_id           = var.folder
   billing_account     = var.billing_account
   auto_create_network = false
@@ -135,9 +135,9 @@ resource "google_compute_subnetwork_iam_member" "editor_group_subnet_access" {
 
 resource "google_compute_subnetwork_iam_member" "api_sa_subnet_access" {
   for_each   = toset(var.base_subnets)
-  project    = split("/", each.key)[1]
-  region     = split("/", each.key)[3]
-  subnetwork = split("/", each.key)[5]
+  project    = split("/", each.key)[6]
+  region     = split("/", each.key)[8]
+  subnetwork = split("/", each.key)[10]
   role       = "roles/compute.networkUser"
   member     = "serviceAccount:${google_project.main.number}@cloudservices.gserviceaccount.com"
 

@@ -9,6 +9,12 @@ variable "editor_group" {
   type        = list(string)
 }
 
+variable "identity_domain" {
+  description = "The domain associated with the Google Workspace / Cloud Identity account."
+  type        = string
+}
+
+
 variable "metadata" {
   description = "Metadata to be associated with the project."
   type = object({

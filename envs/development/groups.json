@@ -1,0 +1,9 @@
+{
+    "gcp-editors-proj1": {
+        "group_name": "gcp-editors-proj1",
+        "description": "GCP Editors for Projects in Group 1",
+        "members": [
+            "admin"
+        ]
+    }
+}

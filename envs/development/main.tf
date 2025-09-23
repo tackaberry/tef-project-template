@@ -10,7 +10,6 @@ variable "remote_state_bucket" {
   type        = string
 }
 
-
 locals {
 
   env                = "development"
@@ -22,7 +21,11 @@ locals {
   region = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   organization = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
 
+  directory_customer_id = data.google_organization.org.directory_customer_id
+  identity_domain      = data.google_organization.org.domain
+
   projects = jsondecode(file("projects.json"))
+  groups  = jsondecode(file("groups.json"))
 
   billing_account = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
 
@@ -32,6 +35,9 @@ locals {
 
 }
 
+data "google_organization" "org" {
+  organization = local.organization
+}
 
 resource "google_folder" "folder" {
   display_name = "fldr-${local.folder_name}"
@@ -61,6 +67,8 @@ resource "google_assured_workloads_workload" "folder_pb" {
   billing_account           = "billingAccounts/${local.billing_account}"
   enable_sovereign_controls = true
 
+  provisioned_resources_parent = google_folder.folder.name  
+
   resource_settings {
     resource_type = "CONSUMER_FOLDER"
   }
@@ -83,6 +91,7 @@ resource "google_project" "dependency_project" {
   auto_create_network = false
   deletion_policy     = "DELETE"
 }
+
 
 resource "google_project_service" "dependency_project_api" {
 
@@ -107,6 +116,15 @@ data "terraform_remote_state" "env" {
   config = {
     bucket = var.remote_state_bucket
     prefix = "terraform/environments/${local.env}"
+  }
+}
+
+data "terraform_remote_state" "org" {
+  backend = "gcs"
+
+  config = {
+    bucket = var.remote_state_bucket
+    prefix = "terraform/org/state"
   }
 }
 
