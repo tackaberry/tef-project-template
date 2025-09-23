@@ -16,7 +16,7 @@ locals {
     "roles/alloydb.databaseUser",
     "roles/cloudsql.editor",
     "roles/storage.admin",
-    "roles/storage.bucketviewer",
+    "roles/storage.bucketViewer",
     "roles/compute.instanceAdmin",
     "roles/compute.networkUser",
     "roles/monitoring.editor",
