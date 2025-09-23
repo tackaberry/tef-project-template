@@ -1,8 +1,8 @@
 terraform {
-  backend "gcs" {
-    bucket = "bkt-prj-b-seed-tfstate-nnnn"
-    prefix = "terraform/projects/base_business_unit/development"
-  }
+  # backend "gcs" {
+  #   bucket = "bkt-prj-b-seed-tfstate-nnnn"
+  #   prefix = "terraform/projects/base_business_unit/development"
+  # }
 }
 
 variable "remote_state_bucket" {
@@ -18,14 +18,14 @@ locals {
   folder_name        = "group-1"
   project_prefix     = "group1"
 
-  folder = data.terraform_remote_state.folders.outputs.folders[index(data.terraform_remote_state.folders.outputs.folders.*.display_name, local.folder_name)]
+  # folder = data.terraform_remote_state.folders.outputs.folders[index(data.terraform_remote_state.folders.outputs.folders.*.display_name, local.folder_name)]
 
   region = data.terraform_remote_state.bootstrap.outputs.common_config.default_region
   organization = data.terraform_remote_state.bootstrap.outputs.common_config.org_id
 
   projects = jsondecode(file("projects.json"))
 
-  billing_account = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account_id
+  billing_account = data.terraform_remote_state.bootstrap.outputs.common_config.billing_account
 
   base_host_project = data.terraform_remote_state.network.outputs.base_host_project_id
   base_network      = data.terraform_remote_state.network.outputs.base_network_self_link
@@ -70,6 +70,18 @@ resource "google_assured_workloads_workload" "folder_pb" {
   }
 
   provider                  = google-beta
+}
+
+resource "random_string" "suffix" {
+  length  = 4
+  upper   = false
+  special = false
+}
+
+resource "google_project" "dependency_project" {
+  name                = "dep-${local.env}-${local.project_prefix}"
+  project_id          = "dep-${local.env}-${local.project_prefix}-${random_string.suffix.result}"
+  auto_create_network = false
 }
 
 data "terraform_remote_state" "bootstrap" {

@@ -17,3 +17,4 @@ output "data_classification" {
 output "project_type" {
   value = local.project_type
 }
+

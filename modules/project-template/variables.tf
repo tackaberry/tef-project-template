@@ -6,7 +6,7 @@ variable "project_name" {
 
 variable "editor_group" {
   description = "The email of the group that will be granted editor roles."
-  type        = map(string)
+  type        = list(string)
 }
 
 variable "metadata" {
@@ -15,7 +15,10 @@ variable "metadata" {
     type             = string
     data_classification = string
   })
-  default     = {}
+  default     = {
+    type = "client"
+    data_classification = "unclass"
+  }
 }
 
 variable "billing_account" {

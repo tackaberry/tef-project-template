@@ -57,6 +57,7 @@ locals {
   editor_group_roles = flatten([
     for editor_group in local.editor_group : [
       for role in local.editor_roles : {
+        key = "${editor_group}-${role}"
         member = "group:${editor_group}"
         role = role
       }
@@ -66,10 +67,11 @@ locals {
   network_roles = flatten([
     for editor_group in local.editor_group : [
       for subnet in var.base_subnets :{
+        key = "${editor_group}-${subnet}"
         member = "group:${editor_group}"
-        project = split("/", subnet.key)[6]
-        region = split("/", subnet.key)[8]
-        subnetwork = split("/", subnet.key)[10]
+        project = split("/", subnet)[6]
+        region = split("/", subnet)[8]
+        subnetwork = split("/", subnet)[10]
       }
     ]
   ])
@@ -99,7 +101,7 @@ resource "google_project_service" "apis" {
 
 resource "google_project_iam_member" "editor_group_bindings" {
   
-  for_each = local.editor_group_roles
+  for_each = { for item in local.editor_group_roles: item.key => item }
   
   project  = google_project.main.project_id
   role     = each.value.role
@@ -117,7 +119,7 @@ resource "google_compute_shared_vpc_service_project" "main" {
 
 resource "google_compute_subnetwork_iam_member" "editor_group_subnet_access" {
   
-  for_each   = local.network_roles
+  for_each = { for item in local.network_roles: item.key => item }
 
   project    = each.value.project
   region     = each.value.region
