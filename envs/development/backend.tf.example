@@ -1,0 +1,6 @@
+terraform {
+  backend "gcs" {
+    bucket = "bkt-prj-b-seed-tfstate-nnnn"
+    prefix = "terraform/projects/base_business_unit/development"
+  }
+}
